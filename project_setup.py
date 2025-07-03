@@ -90,13 +90,46 @@ def setup(
 def _build_image(project: mlrun.projects.MlrunProject):
     config = {
         "base_image": "mlrun/mlrun-kfp",
+        "torch_index": "https://download.pytorch.org/whl/cpu",
+        "onnx_package": "onnxruntime"
     }
-    
-    commands = [
-        'python --version',
-        'pip install SQLAlchemy==2.0.31',
-        'pip list | grep SQLAlchemy'
+
+    system_commands = [
+        # Update apt-get to install ffmpeg (support audio file formats):
+        "apt-get update -y && apt-get install ffmpeg -y"
     ]
+
+    infrastructure_requirements = [
+        "pip install transformers==4.44.1",
+        f"pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url {config['torch_index']}"
+    ]
+
+    huggingface_requirements = [
+        "pip install bitsandbytes==0.41.1 accelerate==0.24.1 datasets==2.14.6 peft==0.5.0 optimum==1.13.2"
+    ]
+    
+    # other_requirements = [
+    #     "pip install SQLAlchemy==2.0.31",
+    #     "pip show sqlalchemy",
+    #     'python --version',
+    # ]
+    
+    other_requirements = [
+        "pip install mlrun langchain==0.2.17 openai==1.58.1 langchain_community==0.2.19 pydub==0.25.1 streamlit==1.28.0 st-annotated-text==4.0.1 spacy==3.7.2 librosa==0.10.1 presidio-anonymizer==2.2.34 presidio-analyzer==2.2.34 nltk==3.8.1 flair==0.13.0 htbuilder==0.6.2",
+        "python -m spacy download en_core_web_lg",
+        "pip install SQLAlchemy==2.0.31",
+        "pip uninstall -y onnxruntime-gpu onnxruntime",
+        f"pip install {config['onnx_package']}",
+        "pip show sqlalchemy",
+        'python --version',
+    ]
+    
+    # Combine commands in the required order
+    commands = (
+            system_commands +
+            infrastructure_requirements +
+            other_requirements
+    )
 
     # Build the image
     result = project.build_image(
@@ -122,7 +155,8 @@ def _set_function(
         apply_auto_mount: bool = True,
 ):
     # Set the given function:
-
+    if with_repo is None:
+        with_repo =  not func.startswith("hub://")
     mlrun_function = project.set_function(
         func=func, name=name, kind=kind, with_repo=with_repo, image=image,
     )
@@ -135,7 +169,7 @@ def _set_functions(
     project: mlrun.projects.MlrunProject,
 ):
 
-    # Conversation generator:
+
     _set_function(
         project=project,
         func="./src/printdummy.py",
@@ -144,6 +178,13 @@ def _set_functions(
         apply_auto_mount=True,
     )
 
+    _set_function(
+        project=project,
+        func="./src/sub/printdummy.py",
+        name="another-dummy",
+        kind="job",
+        apply_auto_mount=True,
+    )
 
 def _set_workflows(project: mlrun.projects.MlrunProject, image:str):
     project.set_workflow(

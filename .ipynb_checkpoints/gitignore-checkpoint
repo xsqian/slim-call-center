@@ -1,0 +1,7 @@
+.ipynb_checkpoints/kfp-with-mlrun-image-kfp-as-base-checkpoint.ipynb
+.ipynb_checkpoints/project_setup-checkpoint.py
+src/calls_analysis/db_management/__pycache__/create_tables.cpython-311.pyc
+src/common/__pycache__/ProjectSecrets.cpython-311.pyc
+src/.ipynb_checkpoints/
+src/workflows/.ipynb_checkpoints/
+gitignore

@@ -1,0 +1,44 @@
+kind: project
+metadata:
+  created: '2025-07-03T16:46:23.565000'
+  name: kfp-with-mlrun-image-kfp-xingsheng
+spec:
+  desired_state: online
+  load_source_on_run: true
+  owner: xingsheng
+  build:
+    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+    base_image: mlrun/mlrun-kfp
+    commands:
+    - apt-get update -y && apt-get install ffmpeg -y
+    - pip install transformers==4.44.1
+    - pip install SQLAlchemy==2.0.31
+    - pip show sqlalchemy
+    - python --version
+  params:
+    build_image: false
+    source: git://github.com/xsqian/slim-call-center.git#main
+    default_image_name: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  source: git://github.com/xsqian/slim-call-center.git#main
+  default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  functions:
+  - url: ./src/printdummy.py
+    name: printdummy
+    kind: job
+    handler: print_dummy
+  - url: ./src/printdummy.py
+    name: dummy
+    kind: job
+    with_repo: true
+  - url: ./src/sub/printdummy.py
+    name: another-dummy
+    kind: job
+    with_repo: true
+  conda: ''
+  origin_url: git://github.com/xsqian/slim-call-center.git#refs/heads/main
+  workflows:
+  - image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+    path: ./src/workflows/dummy.py
+    name: dummy
+status:
+  state: online

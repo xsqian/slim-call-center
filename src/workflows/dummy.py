@@ -26,3 +26,5 @@ def pipeline(generate_clients_and_agents: bool = True
 
     with dsl.Condition(generate_clients_and_agents == True) as generate_data_condition:
         frun = project.run_function("printdummy")
+
+    another_run = project.run_function("another-dummy")
