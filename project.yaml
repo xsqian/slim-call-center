@@ -1,0 +1,36 @@
+metadata:
+  name: kfp-with-mlrun-image-kfp-xingsheng
+  created: '2025-07-03T16:46:23.565000'
+kind: project
+spec:
+  conda: ''
+  default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  workflows:
+  - image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+    name: dummy
+    path: ./src/workflows/dummy.py
+  source: v3io:///projects/kfp-with-mlrun-image-kfp-xingsheng/archive1.zip
+  functions:
+  - url: ./src/printdummy.py
+    name: printdummy
+    kind: job
+    handler: print_dummy
+  - url: ./src/printdummy.py
+    name: dummy
+    kind: job
+  params:
+    build_image: true
+    source: v3io:///projects/kfp-with-mlrun-image-kfp/archive1.zip
+    default_image_name: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  desired_state: online
+  load_source_on_run: true
+  build:
+    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+    commands:
+    - python --version
+    - pip install SQLAlchemy==2.0.31
+    - pip list | grep SQLAlchemy
+    base_image: mlrun/mlrun-kfp
+  owner: xingsheng
+status:
+  state: online
