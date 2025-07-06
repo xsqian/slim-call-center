@@ -2,22 +2,28 @@ metadata:
   name: kfp-with-mlrun-image-kfp-xingsheng
   created: '2025-07-03T16:46:23.565000'
 spec:
-  default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
-  desired_state: online
-  workflows:
-  - name: dummy
-    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
-    path: ./src/workflows/dummy.py
+  functions:
+  - url: ./src/printdummy.py
+    name: printdummy
+    kind: job
+    handler: print_dummy
+  - url: ./src/printdummy.py
+    name: dummy
+    kind: job
+    with_repo: true
+  - url: ./src/sub/printdummy.py
+    name: another-dummy
+    kind: job
+    with_repo: true
+  - url: hub://text_to_audio_generator
+    name: text-to-audio-generator
+    kind: job
   source: git://github.com/xsqian/slim-call-center.git#main
+  default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
   owner: xingsheng
-  conda: ''
-  params:
-    build_image: false
-    source: git://github.com/xsqian/slim-call-center.git#main
-    default_image_name: .mlrun-project-image-kfp-with-mlrun-image-kfp
-  load_source_on_run: true
   build:
     image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+    base_image: mlrun/mlrun-kfp
     commands:
     - apt-get update -y && apt-get install ffmpeg -y
     - pip install transformers==4.44.1
@@ -32,21 +38,19 @@ spec:
     - pip install onnxruntime
     - pip show sqlalchemy
     - python --version
-    base_image: mlrun/mlrun-kfp
-  functions:
-  - url: ./src/printdummy.py
-    name: printdummy
-    kind: job
-    handler: print_dummy
-  - url: ./src/printdummy.py
-    name: dummy
-    kind: job
-    with_repo: true
-  - url: ./src/sub/printdummy.py
-    name: another-dummy
-    kind: job
-    with_repo: true
+  params:
+    build_image: false
+    source: git://github.com/xsqian/slim-call-center.git#main
+    default_image_name: .mlrun-project-image-kfp-with-mlrun-image-kfp
+    default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  desired_state: online
+  load_source_on_run: true
+  conda: ''
   origin_url: git://github.com/xsqian/slim-call-center.git#refs/heads/main
-kind: project
+  workflows:
+  - name: dummy
+    path: ./src/workflows/dummy.py
+    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
 status:
   state: online
+kind: project

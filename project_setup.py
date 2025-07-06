@@ -57,21 +57,26 @@ def setup(
     build_image = project.get_param(key="build_image", default=False)
     default_image_name = project.get_param(key="default_image_name", default=f'.mlrun-project-image-{project.name}')
     print(f'default_image_name before = {default_image_name}')
-    
+    print(f'default_image = {default_image}')
     # Set the project git source:
     if source:
         print(f"Project Source: {source}")
         project.set_source(source=source, pull_at_runtime=True)
 
     # Set default image:
+    
+    print(f'outside default_image = {default_image}')
     if default_image:
         project.set_default_image(default_image)
+        print(f'indise default_image = {default_image}')
 
     # Build the image:
     if build_image:
-        print("Building default image for the demo:")
+        print("Building default image for the debug:")
         default_image_name = _build_image(project=project)
     print(f'default_image_name after = {default_image_name}')
+    
+
 
     # Refresh MLRun hub to the most up-to-date version:
     mlrun.get_run_db().get_hub_catalog(source_name="default", force_refresh=True)
@@ -82,7 +87,8 @@ def setup(
 
     # Set the workflows:
     _set_workflows(project=project, image=default_image_name)
-
+    # _set_workflows(project=project, image="mlrun/mlrun-kfp")
+    
     # Save and return the project:
     project.save()
     return project
@@ -91,28 +97,26 @@ def _build_image(project: mlrun.projects.MlrunProject):
     config = {
         "base_image": "mlrun/mlrun-kfp",
         "torch_index": "https://download.pytorch.org/whl/cpu",
-        "onnx_package": "onnxruntime"
+        "onnx_package": "onnxruntime",
     }
 
     system_commands = [
         # Update apt-get to install ffmpeg (support audio file formats):
-        "apt-get update -y && apt-get install ffmpeg -y"
+        "apt-get update -y && apt-get install ffmpeg -y",
+        "echo 'mlrun-kfp'",
+        'python --version',
     ]
 
     infrastructure_requirements = [
         "pip install transformers==4.44.1",
-        f"pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url {config['torch_index']}"
+        f"pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url {config['torch_index']}",
+        'python --version',
     ]
 
     huggingface_requirements = [
-        "pip install bitsandbytes==0.41.1 accelerate==0.24.1 datasets==2.14.6 peft==0.5.0 optimum==1.13.2"
+        "pip install bitsandbytes==0.41.1 accelerate==0.24.1 datasets==2.14.6 peft==0.5.0 optimum==1.13.2",
+        'python --version',
     ]
-    
-    # other_requirements = [
-    #     "pip install SQLAlchemy==2.0.31",
-    #     "pip show sqlalchemy",
-    #     'python --version',
-    # ]
     
     other_requirements = [
         "pip install mlrun langchain==0.2.17 openai==1.58.1 langchain_community==0.2.19 pydub==0.25.1 streamlit==1.28.0 st-annotated-text==4.0.1 spacy==3.7.2 librosa==0.10.1 presidio-anonymizer==2.2.34 presidio-analyzer==2.2.34 nltk==3.8.1 flair==0.13.0 htbuilder==0.6.2",
@@ -125,12 +129,28 @@ def _build_image(project: mlrun.projects.MlrunProject):
     ]
     
     # Combine commands in the required order
+    # commands = (
+    #         system_commands +
+    #         infrastructure_requirements +
+    #         huggingface_requirements +
+    #         other_requirements
+    # )
+
     commands = (
             system_commands +
-            infrastructure_requirements +
             other_requirements
     )
-
+    
+    # commands = []
+    # commands = [
+    #     'echo "BEFORE BEFORE get the image and print out the python version"',
+    #     'python --version',
+    #     "pip install SQLAlchemy==2.0.31",
+    #     "pip show sqlalchemy",
+    #     'echo "AFTER AFTER an installation and print out the python version"',
+    #     'python --version',
+    # ]
+    
     # Build the image
     result = project.build_image(
         base_image=config["base_image"],
@@ -186,6 +206,16 @@ def _set_functions(
         apply_auto_mount=True,
     )
 
+    # Text to audio generator:
+    _set_function(
+        project=project,
+        func="hub://text_to_audio_generator",
+        name="text-to-audio-generator",
+        kind="job",
+        with_repo=False,
+        apply_auto_mount=True,
+    )
+    
 def _set_workflows(project: mlrun.projects.MlrunProject, image:str):
     project.set_workflow(
         name="dummy", workflow_path="./src/workflows/dummy.py", image=image
