@@ -125,6 +125,7 @@ def _build_image(project: mlrun.projects.MlrunProject):
         "pip uninstall -y onnxruntime-gpu onnxruntime",
         f"pip install {config['onnx_package']}",
         "pip show sqlalchemy",
+        "pip show requests_toolbelt",
         'python --version',
     ]
     
@@ -136,20 +137,21 @@ def _build_image(project: mlrun.projects.MlrunProject):
     #         other_requirements
     # )
 
-    commands = (
-            system_commands +
-            other_requirements
-    )
+    # commands = (
+    #         system_commands +
+    #         other_requirements
+    # )
     
-    # commands = []
-    # commands = [
-    #     'echo "BEFORE BEFORE get the image and print out the python version"',
-    #     'python --version',
-    #     "pip install SQLAlchemy==2.0.31",
-    #     "pip show sqlalchemy",
-    #     'echo "AFTER AFTER an installation and print out the python version"',
-    #     'python --version',
-    # ]
+    commands = []
+    commands = [
+        'echo "BEFORE BEFORE get the image and print out the python version"',
+        'python --version',
+        "pip install SQLAlchemy==2.0.31",
+        "pip show sqlalchemy",
+        "pip show requests_toolbelt",
+        'echo "AFTER AFTER an installation and print out the python version"',
+        'python --version',
+    ]
     
     # Build the image
     result = project.build_image(
