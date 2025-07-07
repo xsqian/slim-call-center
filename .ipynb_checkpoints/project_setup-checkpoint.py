@@ -16,23 +16,23 @@ from pathlib import Path
 import boto3
 import mlrun
 
-###########################
-import os
-import sys
-import sqlalchemy
-print(f'sqlalchemy version = {sqlalchemy.__version__}')
-current_dir = os.path.dirname(os.path.abspath(__file__))
-print(f'current dir = {current_dir}')
-sys.path.insert(0, current_dir)
-parent_dir = os.path.join(current_dir, os.pardir)
-sys.path.insert(0, parent_dir)
-parent_dir = os.path.join(parent_dir, os.pardir)
-sys.path.insert(0, parent_dir)
-print(f'parent dir = {parent_dir}')
-print(f"Python version: {sys.version}")
-print("sys.path:", sys.path)
-print("PYTHONPATH (from environment):", os.environ.get('PYTHONPATH'))
-###########################
+# ###########################
+# import os
+# import sys
+# import sqlalchemy
+# print(f'sqlalchemy version = {sqlalchemy.__version__}')
+# current_dir = os.path.dirname(os.path.abspath(__file__))
+# print(f'current dir = {current_dir}')
+# sys.path.insert(0, current_dir)
+# parent_dir = os.path.join(current_dir, os.pardir)pull_
+# sys.path.insert(0, parent_dir)
+# parent_dir = os.path.join(parent_dir, os.pardir)
+# sys.path.insert(0, parent_dir)
+# print(f'parent dir = {parent_dir}')
+# print(f"Python version: {sys.version}")
+# print("sys.path:", sys.path)
+# print("PYTHONPATH (from environment):", os.environ.get('PYTHONPATH'))
+# ###########################
 
 from src.calls_analysis.db_management import create_tables
 from src.common import ProjectSecrets
@@ -63,7 +63,7 @@ def setup(
     # Set the project git source:
     if source:
         print(f"Project Source: {source}")
-        project.set_source(source=source, pull_at_runtime=True)
+        project.set_source(source=source, pull_at_runtime=False)
 
     # Set default image:
     
