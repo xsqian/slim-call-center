@@ -221,13 +221,21 @@ def _set_functions(
         apply_auto_mount=True,
     )
     
-def _set_workflows(project: mlrun.projects.MlrunProject, image:str):
+def _set_workflows(project: mlrun.projects.MlrunProject):
+    print(f"project.spec.source = {project.spec.source}")
+    commands=['pip install SQLAlchemy==2.0.31', 
+              'echo "" > /empty/requirements.txt', 
+              'ls -l /empty/',
+              'cat /empty/Dockerfile', 
+              'cat /empty/requirements.txt',
+              'ls -l /home/',
+              'rm -rf /home/mlrun-code/project_setup.py']    
     assert project.build_image(
                         set_as_default=False,
                         base_image='mlrun/mlrun-kfp',
                         image ='.slim-demo-call-center-kfp',
                         overwrite_build_params=True,
-                        commands=['pip install SQLAlchemy==2.0.31', 'echo "" > /empty/requirements.txt', 'rm -rf /home/mlrun-code/project_setup.py'])
+                        commands=commands)
     
     
     project.set_workflow(
