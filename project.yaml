@@ -1,30 +1,14 @@
 spec:
   source: git://github.com/xsqian/slim-call-center.git#main
-  default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  desired_state: online
+  load_source_on_run: true
   params:
     build_image: false
     source: git://github.com/xsqian/slim-call-center.git#main
     default_image_name: .mlrun-project-image-kfp-with-mlrun-image-kfp
     default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
-  workflows:
-  - path: ./src/workflows/dummy.py
-    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
-    name: dummy
-  build:
-    base_image: mlrun/mlrun-kfp
-    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
-    commands:
-    - echo "BEFORE BEFORE get the image and print out the python version"
-    - python --version
-    - pip install SQLAlchemy==2.0.31
-    - pip show sqlalchemy
-    - pip show requests_toolbelt
-    - echo "AFTER AFTER an installation and print out the python version"
-    - python --version
-  load_source_on_run: true
-  desired_state: online
-  owner: xingsheng
-  origin_url: git://github.com/xsqian/slim-call-center.git#refs/heads/main
+  default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  conda: ''
   functions:
   - url: ./src/printdummy.py
     name: printdummy
@@ -41,10 +25,26 @@ spec:
   - url: hub://text_to_audio_generator
     name: text-to-audio-generator
     kind: job
-  conda: ''
-kind: project
+  origin_url: git://github.com/xsqian/slim-call-center.git#refs/heads/main
+  workflows:
+  - path: ./src/workflows/dummy.py
+    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+    name: dummy
+  build:
+    base_image: mlrun/mlrun-kfp
+    commands:
+    - echo "BEFORE BEFORE get the image and print out the python version"
+    - python --version
+    - pip install SQLAlchemy==2.0.31
+    - pip show sqlalchemy
+    - pip show requests_toolbelt
+    - echo "AFTER AFTER an installation and print out the python version"
+    - python --version
+    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  owner: xingsheng
 status:
   state: online
+kind: project
 metadata:
-  name: kfp-with-mlrun-image-kfp-xingsheng
   created: '2025-07-03T16:46:23.565000'
+  name: kfp-with-mlrun-image-kfp-xingsheng
