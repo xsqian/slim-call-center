@@ -55,9 +55,11 @@ def setup(
     source = project.get_param(key="source")
     default_image = project.get_param(key="default_image", default=None)
     build_image = project.get_param(key="build_image", default=False)
-    default_image_name = project.get_param(key="default_image_name", default=f'.mlrun-project-image-{project.name}')
-    print(f'default_image_name before = {default_image_name}')
-    print(f'default_image = {default_image}')
+    
+    print(f'get_param source = {source}')
+    print(f'get_param default_image = {default_image}')
+    print(f'get_param build_image = {build_image}')    
+    
     # Set the project git source:
     if source:
         print(f"Project Source: {source}")
@@ -73,8 +75,8 @@ def setup(
     # Build the image:
     if build_image:
         print("Building default image for the debug:")
-        default_image_name = _build_image(project=project)
-    print(f'default_image_name after = {default_image_name}')
+        default_image = _build_image(project=project)
+    print(f'default_image after = {default_image}')
     
 
 
@@ -86,7 +88,7 @@ def setup(
 
 
     # Set the workflows:
-    _set_workflows(project=project, image=default_image_name)
+    _set_workflows(project=project, image=default_image)
     # _set_workflows(project=project, image="mlrun/mlrun-kfp")
     
     # Save and return the project:
@@ -162,8 +164,8 @@ def _build_image(project: mlrun.projects.MlrunProject):
         overwrite_build_params=True
     )
     print(f"build result = {result}")
-    default_image_name = result.outputs["image"]
-    return default_image_name
+    default_image = result.outputs["image"]
+    return default_image
 
 
 def _set_function(

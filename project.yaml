@@ -1,8 +1,18 @@
-kind: project
 spec:
-  origin_url: git://github.com/xsqian/slim-call-center.git#refs/heads/main
+  source: git://github.com/xsqian/slim-call-center.git#main
   default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  params:
+    build_image: false
+    source: git://github.com/xsqian/slim-call-center.git#main
+    default_image_name: .mlrun-project-image-kfp-with-mlrun-image-kfp
+    default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  workflows:
+  - path: ./src/workflows/dummy.py
+    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+    name: dummy
   build:
+    base_image: mlrun/mlrun-kfp
+    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
     commands:
     - echo "BEFORE BEFORE get the image and print out the python version"
     - python --version
@@ -11,11 +21,10 @@ spec:
     - pip show requests_toolbelt
     - echo "AFTER AFTER an installation and print out the python version"
     - python --version
-    base_image: mlrun/mlrun-kfp
-    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
   load_source_on_run: true
-  conda: ''
   desired_state: online
+  owner: xingsheng
+  origin_url: git://github.com/xsqian/slim-call-center.git#refs/heads/main
   functions:
   - url: ./src/printdummy.py
     name: printdummy
@@ -32,19 +41,10 @@ spec:
   - url: hub://text_to_audio_generator
     name: text-to-audio-generator
     kind: job
-  params:
-    build_image: false
-    source: git://github.com/xsqian/slim-call-center.git#main
-    default_image_name: .mlrun-project-image-kfp-with-mlrun-image-kfp
-    default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
-  owner: xingsheng
-  source: git://github.com/xsqian/slim-call-center.git#main
-  workflows:
-  - name: dummy
-    image: .mlrun-project-image-kfp-with-mlrun-image-kfp
-    path: ./src/workflows/dummy.py
+  conda: ''
+kind: project
+status:
+  state: online
 metadata:
   name: kfp-with-mlrun-image-kfp-xingsheng
   created: '2025-07-03T16:46:23.565000'
-status:
-  state: online
