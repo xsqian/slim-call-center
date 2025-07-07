@@ -222,6 +222,14 @@ def _set_functions(
     )
     
 def _set_workflows(project: mlrun.projects.MlrunProject, image:str):
+    asset project.build_image(
+                        set_as_default=False,
+                        base_image='mlrun/mlrun-kfp',
+                        image ='.slim-demo-call-center-kfp',
+                        overwrite_build_params=True,
+                        commands=['pip install SQLAlchemy==2.0.31', 'echo "" > /empty/requirements.txt', 'rm -rf /home/mlrun-code/project_setup.py'])
+    
+    
     project.set_workflow(
-        name="dummy", workflow_path="./src/workflows/dummy.py", image=image
+        name="dummy", workflow_path="./src/workflows/dummy.py", image='.slim-demo-call-center-kfp'
     )
