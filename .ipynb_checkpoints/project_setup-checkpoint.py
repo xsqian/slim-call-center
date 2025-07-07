@@ -222,7 +222,7 @@ def _set_functions(
     )
     
 def _set_workflows(project: mlrun.projects.MlrunProject, image:str):
-    asset project.build_image(
+    assert project.build_image(
                         set_as_default=False,
                         base_image='mlrun/mlrun-kfp',
                         image ='.slim-demo-call-center-kfp',
