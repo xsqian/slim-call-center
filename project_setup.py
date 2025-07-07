@@ -97,7 +97,7 @@ def setup(
 
 def _build_image(project: mlrun.projects.MlrunProject):
     config = {
-        "base_image": "mlrun/mlrun-kfp",
+        "base_image": "mlrun/mlrun",
         "torch_index": "https://download.pytorch.org/whl/cpu",
         "onnx_package": "onnxruntime",
     }
