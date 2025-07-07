@@ -88,8 +88,7 @@ def setup(
 
 
     # Set the workflows:
-    _set_workflows(project=project, image=default_image)
-    # _set_workflows(project=project, image="mlrun/mlrun-kfp")
+    _set_workflows(project=project)
     
     # Save and return the project:
     project.save()
