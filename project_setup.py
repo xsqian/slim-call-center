@@ -122,7 +122,7 @@ def _build_image(project: mlrun.projects.MlrunProject):
         "pip uninstall -y onnxruntime-gpu onnxruntime",
         f"pip install {config['onnx_package']}",
         "pip install requests_toolbelt==0.10.1",
-        "pip show sqlalchemy && \
+        'pip show sqlalchemy && \
          pip show requests_toolbelt && \
          python --version',
     ]
