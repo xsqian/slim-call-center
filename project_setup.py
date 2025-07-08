@@ -75,7 +75,7 @@ def setup(
     # Build the image:
     if build_image:
         print("Building default image for the debug:")
-        _build_image(project=project)
+        _build_image(project=project, default_image=default_image)
     print(f'default_image after = {default_image}')
     
 
