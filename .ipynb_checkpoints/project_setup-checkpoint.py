@@ -224,11 +224,11 @@ def _set_workflows(project: mlrun.projects.MlrunProject):
     
     print(f"project.spec.source = {project.spec.source}")
     
-    commands=['pip install SQLAlchemy==2.0.31 \
-              echo "" > /empty/requirements.txt \
-              ls -l /empty/ \
-              cat /empty/Dockerfile \
-              ls -l /home/ \
+    commands=['pip install SQLAlchemy==2.0.31 && \
+              echo "" > /empty/requirements.txt && \
+              ls -l /empty/ && \
+              cat /empty/Dockerfile && \
+              ls -l /home/ && \
               rm -rf /home/mlrun-code/project_setup.py'
              ]
     

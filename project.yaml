@@ -1,24 +1,26 @@
 status:
   state: online
-kind: project
 metadata:
   created: '2025-07-03T16:46:23.565000'
   name: kfp-with-mlrun-image-kfp-xingsheng
+kind: project
 spec:
-  default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  params:
+    build_image: false
+    source: git://github.com/xsqian/slim-call-center.git#dan
+    default_image_name: .mlrun-project-image-kfp-with-mlrun-image-kfp
+    default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
   build:
-    commands:
-    - pip install SQLAlchemy==2.0.31
-    - echo "" > /empty/requirements.txt
-    - rm -rf /home/mlrun-code/project_setup.py
-    source_code_target_dir: /home/mlrun_code/
-    image: .slim-demo-call-center-kfp
     base_image: mlrun/mlrun-kfp
-  load_source_on_run: false
-  workflows:
-  - path: ./src/workflows/dummy.py
     image: .slim-demo-call-center-kfp
-    name: dummy
+    commands:
+    - pip install SQLAlchemy==2.0.31 &&               echo "" > /empty/requirements.txt
+      &&               ls -l /empty/ &&               cat /empty/Dockerfile &&               ls
+      -l /home/ &&               rm -rf /home/mlrun-code/project_setup.py
+    source_code_target_dir: /home/mlrun_code/
+  origin_url: git://github.com/xsqian/slim-call-center.git#refs/heads/dan
+  source: git://github.com/xsqian/slim-call-center.git#dan
+  load_source_on_run: false
   owner: xingsheng
   functions:
   - url: ./src/printdummy.py
@@ -36,12 +38,10 @@ spec:
   - url: hub://text_to_audio_generator
     name: text-to-audio-generator
     kind: job
-  conda: ''
-  source: git://github.com/xsqian/slim-call-center.git#dan
-  origin_url: git://github.com/xsqian/slim-call-center.git#refs/heads/dan
+  workflows:
+  - path: ./src/workflows/dummy.py
+    image: .slim-demo-call-center-kfp
+    name: dummy
+  default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
   desired_state: online
-  params:
-    build_image: false
-    source: git://github.com/xsqian/slim-call-center.git#dan
-    default_image_name: .mlrun-project-image-kfp-with-mlrun-image-kfp
-    default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  conda: ''
