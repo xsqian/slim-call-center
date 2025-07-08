@@ -18,6 +18,9 @@ print(kfp.__version__)
 from src import printdummy
 printdummy.print_dummy()
 
+from src.sub import printdummy
+printdummy.print_dummy()
+
 @kfp.dsl.pipeline()
 def pipeline(generate_clients_and_agents: bool = True
 ):

@@ -1,30 +1,11 @@
+kind: project
 status:
   state: online
+metadata:
+  created: '2025-07-03T16:46:23.565000'
+  name: kfp-with-mlrun-image-kfp-xingsheng
 spec:
-  build:
-    commands:
-    - pip install SQLAlchemy==2.0.31 &&               echo "" > /empty/requirements.txt
-      &&               ls -l /empty/ &&               cat /empty/Dockerfile &&               ls
-      -l /home/ &&               rm -rf /home/mlrun-code/project_setup.py
-    image: .slim-demo-call-center-kfp
-    base_image: mlrun/mlrun-kfp
-    source_code_target_dir: /home/mlrun_code/
-  load_source_on_run: false
-  workflows:
-  - path: ./src/workflows/dummy.py
-    name: dummy
-    image: .slim-demo-call-center-kfp
-  default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
-  desired_state: online
-  params:
-    build_image: false
-    source: git://github.com/xsqian/slim-call-center.git#dan
-    default_image_name: .mlrun-project-image-kfp-with-mlrun-image-kfp
-    default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
-  source: git://github.com/xsqian/slim-call-center.git#dan
   origin_url: git://github.com/xsqian/slim-call-center.git#refs/heads/dan
-  owner: xingsheng
-  conda: ''
   functions:
   - url: ./src/printdummy.py
     name: printdummy
@@ -41,7 +22,26 @@ spec:
   - url: hub://text_to_audio_generator
     name: text-to-audio-generator
     kind: job
-metadata:
-  name: kfp-with-mlrun-image-kfp-xingsheng
-  created: '2025-07-03T16:46:23.565000'
-kind: project
+  conda: ''
+  default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
+  workflows:
+  - path: ./src/workflows/dummy.py
+    image: .slim-demo-call-center-kfp
+    name: dummy
+  desired_state: online
+  build:
+    source_code_target_dir: /home/mlrun_code/
+    base_image: mlrun/mlrun-kfp
+    commands:
+    - pip install SQLAlchemy==2.0.31 &&           echo "" > /empty/requirements.txt
+      &&           ls -l /empty/ &&           cat /empty/Dockerfile &&           ls
+      -l /home/ &&           rm -rf /home/mlrun-code/project_setup.py
+    image: .slim-demo-call-center-kfp
+  source: git://github.com/xsqian/slim-call-center.git#dan
+  load_source_on_run: false
+  owner: xingsheng
+  params:
+    build_image: true
+    source: git://github.com/xsqian/slim-call-center.git#dan
+    default_image_name: .mlrun-project-image-kfp-with-mlrun-image-kfp
+    default_image: .mlrun-project-image-kfp-with-mlrun-image-kfp
