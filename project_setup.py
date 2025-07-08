@@ -94,7 +94,7 @@ def setup(
     project.save()
     return project
 
-def _build_image(project: mlrun.projects.MlrunProject, default_image=default_image):
+def _build_image(project: mlrun.projects.MlrunProject, default_image):
     config = {
         "base_image": "mlrun/mlrun",
         "torch_index": "https://download.pytorch.org/whl/cpu",
