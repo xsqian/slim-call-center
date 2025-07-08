@@ -153,7 +153,7 @@ def _build_image(project: mlrun.projects.MlrunProject):
     
     # Build the image
     assert project.build_image(
-        image = deafult_image,
+        image = default_image,
         base_image=config["base_image"],
         commands=commands,
         set_as_default=True,
