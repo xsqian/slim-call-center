@@ -94,7 +94,7 @@ def setup(
     project.save()
     return project
 
-def _build_image(project: mlrun.projects.MlrunProject):
+def _build_image(project: mlrun.projects.MlrunProject, default_image=default_image):
     config = {
         "base_image": "mlrun/mlrun",
         "torch_index": "https://download.pytorch.org/whl/cpu",
@@ -134,13 +134,7 @@ def _build_image(project: mlrun.projects.MlrunProject):
             huggingface_requirements +
             other_requirements
     )
-
-    # commands = (
-    #         system_commands +
-    #         other_requirements
-    # )
     
-    # commands = []
     # commands = [
     #     'echo "BEFORE BEFORE get the image and print out the python version"',
     #     'python --version',
