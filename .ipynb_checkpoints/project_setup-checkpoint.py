@@ -75,7 +75,7 @@ def setup(
     # Build the image:
     if build_image:
         print("Building default image for the debug:")
-        default_image = _build_image(project=project)
+        _build_image(project=project)
     print(f'default_image after = {default_image}')
     
 
@@ -104,19 +104,15 @@ def _build_image(project: mlrun.projects.MlrunProject):
     system_commands = [
         # Update apt-get to install ffmpeg (support audio file formats):
         "apt-get update -y && apt-get install ffmpeg -y",
-        "echo 'mlrun-kfp'",
-        'python --version',
     ]
 
     infrastructure_requirements = [
         "pip install transformers==4.44.1",
         f"pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url {config['torch_index']}",
-        'python --version',
     ]
 
     huggingface_requirements = [
         "pip install bitsandbytes==0.41.1 accelerate==0.24.1 datasets==2.14.6 peft==0.5.0 optimum==1.13.2",
-        'python --version',
     ]
     
     other_requirements = [
@@ -126,9 +122,9 @@ def _build_image(project: mlrun.projects.MlrunProject):
         "pip uninstall -y onnxruntime-gpu onnxruntime",
         f"pip install {config['onnx_package']}",
         "pip install requests_toolbelt==0.10.1",
-        "pip show sqlalchemy",
-        "pip show requests_toolbelt",
-        'python --version',
+        "pip show sqlalchemy && \
+         pip show requests_toolbelt && \
+         python --version',
     ]
     
     # Combine commands in the required order
@@ -156,17 +152,30 @@ def _build_image(project: mlrun.projects.MlrunProject):
     # ]
     
     # Build the image
-    result = project.build_image(
+    assert project.build_image(
+        image = deafult_image,
         base_image=config["base_image"],
         commands=commands,
         set_as_default=True,
         overwrite_build_params=True
     )
-    print(f"build result = {result}")
-    default_image = result.outputs["image"]
-    return default_image
-
-
+    # command for building woorkflow image
+    commands=['pip install SQLAlchemy==2.0.31 && \
+          echo "" > /empty/requirements.txt && \
+          ls -l /empty/ && \
+          cat /empty/Dockerfile && \
+          ls -l /home/ && \
+          rm -rf /home/mlrun-code/project_setup.py'
+         ]
+    
+    assert project.build_image(
+                        set_as_default=False,
+                        base_image='mlrun/mlrun-kfp',
+                        image ='.slim-demo-call-center-kfp',
+                        overwrite_build_params=True,
+                        commands=commands)
+    
+    
 def _set_function(
         project: mlrun.projects.MlrunProject,
         func: str,
@@ -222,23 +231,7 @@ def _set_functions(
     
 def _set_workflows(project: mlrun.projects.MlrunProject):
     
-    print(f"project.spec.source = {project.spec.source}")
-    
-    commands=['pip install SQLAlchemy==2.0.31 && \
-              echo "" > /empty/requirements.txt && \
-              ls -l /empty/ && \
-              cat /empty/Dockerfile && \
-              ls -l /home/ && \
-              rm -rf /home/mlrun-code/project_setup.py'
-             ]
-    
-    assert project.build_image(
-                        set_as_default=False,
-                        base_image='mlrun/mlrun-kfp',
-                        image ='.slim-demo-call-center-kfp',
-                        overwrite_build_params=True,
-                        commands=commands)
-    
+    print(f"project.spec.source = {project.spec.source}")    
     
     project.set_workflow(
         name="dummy", workflow_path="./src/workflows/dummy.py", image='.slim-demo-call-center-kfp'
